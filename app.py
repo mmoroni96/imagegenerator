@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import os
-import openai
+from openai import OpenAI
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
 def index():
@@ -15,8 +15,12 @@ def generate():
     if not prompt:
         return jsonify({"error": "Prompt mancante"}), 400
     try:
-        response = openai.Image.create(prompt=prompt, n=1, size="512x512")
-        image_url = response['data'][0]['url']
+        response = client.images.generate(
+            model="gpt-image-1",
+            prompt=prompt,
+            size="512x512"
+        )
+        image_url = response.data[0].url
         return jsonify({"image_url": image_url})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
