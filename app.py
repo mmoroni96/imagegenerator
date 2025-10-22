@@ -18,7 +18,7 @@ def generate():
         response = client.images.generate(
             model="gpt-image-1",
             prompt=prompt,
-            size="512x512"
+            size="1024x1024"
         )
         image_url = response.data[0].url
         return jsonify({"image_url": image_url})
